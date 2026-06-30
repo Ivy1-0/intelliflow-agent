@@ -3,151 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IntelliFlow Agent - Alibaba Cloud Hackathon</title>
+    <title>IntelliFlow Agent - Enterprise Workflow Automation | Alibaba Cloud</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="logo">
-            <span class="logo-icon">🤖</span>
-            <h1>IntelliFlow Agent</h1>
-        </div>
-        <div class="header-status">
-            <span class="status-dot"></span>
-            Running on Alibaba Cloud ECS
-        </div>
-    </header>
 
-    <!-- Main Container -->
-    <div class="container">
+    <!-- Top Navigation Bar -->
+    <nav class="top-nav">
+        <div class="nav-left">
+            <div class="logo">
+                <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                    <rect width="36" height="36" rx="8" fill="url(#logoGrad)"/>
+                    <path d="M10 26V12L18 18L26 12V26H10Z" fill="white" opacity="0.9"/>
+                    <circle cx="18" cy="18" r="3" fill="white"/>
+                    <defs>
+                        <linearGradient id="logoGrad" x1="0" y1="0" x2="36" y2="36">
+                            <stop offset="0%" stop-color="#FF6A00"/>
+                            <stop offset="100%" stop-color="#EE0979"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="logo-text">IntelliFlow</span>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link active">Workflow</a>
+                <a href="#" class="nav-link">Analytics</a>
+                <a href="#" class="nav-link">Settings</a>
+            </div>
+        </div>
+        <div class="nav-right">
+            <div class="cloud-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00C853" stroke-width="2">
+                    <path d="M22 12C22 8.13 18.87 5 15 5C13.4 5 11.95 5.64 10.91 6.73C9.78 5.67 8.22 5 6.5 5C3.46 5 1 7.46 1 10.5C1 13.54 3.46 16 6.5 16H21C21.55 16 22 15.55 22 15C22 13.9 21.21 12.92 20.14 12.69C20.06 12.45 20 12.22 20 12C20 12 21.1 12 22 12Z"/>
+                </svg>
+                <span>Alibaba Cloud</span>
+            </div>
+            <div class="status-indicator">
+                <div class="status-pulse"></div>
+                <span>ECS Running</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
         
-        <!-- Left Panel - Customer Inquiry -->
-        <div class="panel inquiry-panel">
-            <h2>📨 Customer Inquiry</h2>
-            
-            <div class="form-group">
-                <label>Customer Name:</label>
-                <input type="text" id="customerName" value="John Smith" placeholder="Enter customer name">
+        <!-- Left Sidebar - Input -->
+        <aside class="sidebar sidebar-left">
+            <div class="card">
+                <div class="card-header">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    <h3>Customer Inquiry</h3>
+                </div>
+                <div class="card-body">
+                    <div class="input-group">
+                        <label class="input-label">Customer Name</label>
+                        <input type="text" id="customerName" class="input-field" value="John Smith" placeholder="Enter customer name">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Email Address</label>
+                        <input type="email" id="customerEmail" class="input-field" value="john@example.com" placeholder="customer@company.com">
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group flex-1">
+                            <label class="input-label">Inquiry Type</label>
+                            <select id="inquiryType" class="input-field select-field">
+                                <option value="quote_request">Quote Request</option>
+                                <option value="support">Technical Support</option>
+                                <option value="complaint">Complaint</option>
+                                <option value="refund">Refund Request</option>
+                                <option value="information">General Inquiry</option>
+                            </select>
+                        </div>
+                        <div class="input-group flex-1">
+                            <label class="input-label">Amount ($)</label>
+                            <input type="number" id="amount" class="input-field" value="7500" placeholder="0.00">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Message</label>
+                        <textarea id="message" class="input-field textarea-field" rows="4" placeholder="Customer's message...">I need pricing for 10 enterprise licenses with premium support. Also having issues with my last order #12345. Can you help with both?</textarea>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="processInquiry()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="5 3 19 12 5 21 5 3"/>
+                            </svg>
+                            Process Inquiry
+                        </button>
+                        <button class="btn btn-outline" onclick="testAmbiguousInput()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                            </svg>
+                            Test Ambiguous
+                        </button>
+                        <button class="btn btn-ghost" onclick="testAutoApproval()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                            Test Auto-Approval
+                        </button>
+                    </div>
+                </div>
             </div>
-            
-            <div class="form-group">
-                <label>Email:</label>
-                <input type="email" id="customerEmail" value="john@example.com" placeholder="customer@email.com">
-            </div>
-            
-            <div class="form-group">
-                <label>Inquiry Type:</label>
-                <select id="inquiryType">
-                    <option value="quote_request">Quote Request</option>
-                    <option value="support">Technical Support</option>
-                    <option value="complaint">Complaint</option>
-                    <option value="refund">Refund Request</option>
-                    <option value="information">General Information</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label>Message:</label>
-                <textarea id="message" rows="4" placeholder="Customer's message...">I need pricing for 10 enterprise licenses with premium support. Also having issues with my last order #12345. Can you help with both?</textarea>
-            </div>
-            
-            <div class="form-group">
-                <label>Amount (if applicable):</label>
-                <input type="number" id="amount" value="7500" placeholder="0">
-            </div>
-            
-            <button class="btn btn-primary" onclick="processInquiry()">
-                ⚡ Process Inquiry
-            </button>
-            
-            <button class="btn btn-secondary" onclick="testAmbiguousInput()">
-                🔄 Test Ambiguous Input
-            </button>
-        </div>
 
-        <!-- Center Panel - Workflow Status -->
-        <div class="panel workflow-panel">
-            <h2>🔄 Workflow Engine</h2>
-            
-            <div id="workflowStatus" class="workflow-status">
-                <p class="waiting-message">Waiting for inquiry...</p>
+            <!-- Quick Stats -->
+            <div class="card stats-card">
+                <div class="stat-item">
+                    <span class="stat-value" id="totalProcessed">0</span>
+                    <span class="stat-label">Processed</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-value" id="approvalRate">0%</span>
+                    <span class="stat-label">Auto-Approval Rate</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-value" id="avgTime">0s</span>
+                    <span class="stat-label">Avg. Time</span>
+                </div>
             </div>
-            
-            <div id="workflowSteps" class="workflow-steps">
-                <!-- Steps appear here dynamically -->
-            </div>
-            
-            <div id="intentResults" class="intent-results" style="display:none;">
-                <h3>Intent Classification (Qwen AI)</h3>
-                <div id="intentList"></div>
-            </div>
-        </div>
+        </aside>
 
-        <!-- Right Panel - Human-in-the-Loop -->
-        <div class="panel approval-panel">
-            <h2>👤 Human-in-the-Loop</h2>
-            
-            <div id="approvalStatus" class="approval-status">
-                <p class="waiting-message">No pending approvals</p>
+        <!-- Center - Workflow Engine -->
+        <section class="content-center">
+            <div class="card">
+                <div class="card-header">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                    <h3>Workflow Engine</h3>
+                    <span class="badge badge-qwen">Qwen-Max</span>
+                </div>
+                <div class="card-body">
+                    <div id="workflowStatus" class="workflow-status-placeholder">
+                        <div class="empty-state">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                                <polyline points="10 9 9 9 8 9"/>
+                            </svg>
+                            <p>Submit an inquiry to start processing</p>
+                        </div>
+                    </div>
+                    <div id="workflowSteps" class="workflow-timeline"></div>
+                    <div id="intentResults" class="intent-panel" style="display:none;">
+                        <div class="panel-title">Intent Classification</div>
+                        <div id="intentList"></div>
+                        <div id="ambiguityWarning" class="ambiguity-alert" style="display:none;"></div>
+                    </div>
+                </div>
             </div>
-            
-            <div id="approvalQueue" class="approval-queue">
-                <!-- Approval requests appear here -->
+        </section>
+
+        <!-- Right Sidebar - Human-in-the-Loop -->
+        <aside class="sidebar sidebar-right">
+            <div class="card">
+                <div class="card-header">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                    <h3>Human-in-the-Loop</h3>
+                    <span class="badge badge-pending" id="pendingCount">0</span>
+                </div>
+                <div class="card-body">
+                    <div id="approvalStatus">
+                        <div class="empty-state">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
+                                <path d="M9 12l2 2 4-4"/>
+                                <circle cx="12" cy="12" r="10"/>
+                            </svg>
+                            <p>No pending approvals</p>
+                        </div>
+                    </div>
+                    <div id="approvalQueue"></div>
+                </div>
             </div>
-            
-            <div id="escalationLog" class="escalation-log">
-                <h3>Escalation Log</h3>
-                <div id="escalationList"></div>
+
+            <div class="card">
+                <div class="card-header">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                    </svg>
+                    <h3>Decision Log</h3>
+                </div>
+                <div class="card-body">
+                    <div id="escalationList">
+                        <div class="empty-state">
+                            <p style="font-size:13px;">No decisions recorded</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Architecture Bar -->
+    <div class="arch-bar">
+        <div class="arch-bar-title">Alibaba Cloud Infrastructure</div>
+        <div class="arch-services">
+            <div class="arch-service">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C853" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+                </svg>
+                <span>DashScope</span>
+            </div>
+            <div class="arch-divider"></div>
+            <div class="arch-service">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C853" stroke-width="2">
+                    <rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/>
+                </svg>
+                <span>ECS</span>
+            </div>
+            <div class="arch-divider"></div>
+            <div class="arch-service">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C853" stroke-width="2">
+                    <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+                </svg>
+                <span>RDS</span>
+            </div>
+            <div class="arch-divider"></div>
+            <div class="arch-service">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C853" stroke-width="2">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
+                <span>Redis</span>
+            </div>
+            <div class="arch-divider"></div>
+            <div class="arch-service">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C853" stroke-width="2">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+                <span>OSS</span>
             </div>
         </div>
+        <button class="btn-proof" onclick="showDeploymentProof()">Deployment Proof</button>
     </div>
 
-    <!-- Architecture Diagram Section -->
-    <div class="architecture-section">
-        <h2>🏗️ System Architecture (Alibaba Cloud)</h2>
-        <div class="architecture-diagram">
-            <pre id="architectureAscii">
-╔══════════════════════════════════════════════════════════╗
-║                    FRONTEND (Browser)                    ║
-║         HTML/CSS/JavaScript - Customer Dashboard         ║
-╚═══════════════════════╦══════════════════════════════════╝
-                        ║
-╔═══════════════════════╩══════════════════════════════════╗
-║              ALIBABA CLOUD ECS (Backend)                 ║
-║  ┌────────────────────────────────────────────────────┐ ║
-║  │  Workflow Engine │ Intent Classifier │ Human Loop  │ ║
-║  └────────────────────────────────────────────────────┘ ║
-╚═══════════════════════╦══════════════════════════════════╝
-                        ║
-╔═══════════════════════╩══════════════════════════════════╗
-║                  ALIBABA CLOUD SERVICES                  ║
-║  ┌──────────┐ ┌──────────┐ ┌─────────┐ ┌────────────┐  ║
-║  │ DashScope│ │  RDS     │ │  Redis  │ │    OSS     │  ║
-║  │ (Qwen AI)│ │(PostgreSQL)│ │(Cache)  │ │ (Storage)  │  ║
-║  └──────────┘ └──────────┘ └─────────┘ └────────────┘  ║
-╚══════════════════════════════════════════════════════════╝
-            </pre>
-        </div>
-    </div>
-
-    <!-- Alibaba Cloud Status -->
-    <div class="cloud-status">
-        <h2>☁️ Alibaba Cloud Services Status</h2>
-        <div id="cloudServices">
-            <div class="service-card">✅ DashScope (Qwen AI)</div>
-            <div class="service-card">✅ ECS (Server)</div>
-            <div class="service-card">✅ RDS (Database)</div>
-            <div class="service-card">✅ Redis (Cache)</div>
-            <div class="service-card">✅ OSS (Storage)</div>
+    <!-- Deployment Proof Modal -->
+    <div id="proofModal" class="modal-overlay">
+        <div class="modal-container terminal-modal">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00ff00" stroke-width="2">
+                        <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
+                    </svg>
+                    <span>Alibaba Cloud Deployment Verification</span>
+                </div>
+                <button class="modal-close" onclick="closeModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" id="terminalOutput"></div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer>
-        <p>🏆 Alibaba Cloud Hackathon Submission - Track 2: Enterprise Workflow Automation</p>
-        <p>GitHub: <a href="https://github.com/Ivy1-0/intelliflow-agent">Ivy1-0/intelliflow-agent</a></p>
-        <p>License: Apache 2.0</p>
+    <footer class="footer">
+        <div class="footer-content">
+            <span>Alibaba Cloud Hackathon Submission</span>
+            <span class="footer-divider">|</span>
+            <span>Track 2: Enterprise Workflow Automation</span>
+            <span class="footer-divider">|</span>
+            <a href="https://github.com/Ivy1-0/intelliflow-agent" class="footer-link">GitHub</a>
+            <span class="footer-divider">|</span>
+            <span>Apache 2.0</span>
+        </div>
     </footer>
 
     <script src="script.js"></script>
