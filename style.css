@@ -358,6 +358,18 @@ body {
     border-color: var(--border);
 }
 
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.input-field.field-error {
+    border-color: #DC2626 !important;
+    box-shadow: 0 0 0 3px rgba(220,38,38,0.12);
+}
+
 .btn-proof {
     display: flex;
     align-items: center;
