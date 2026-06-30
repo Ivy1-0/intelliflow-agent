@@ -36,12 +36,30 @@ let stats = { total: 0, autoApproved: 0, totalTime: 0 };
 // PROCESS INQUIRY
 // ============================================
 
+let isProcessing = false;
+
 async function processInquiry() {
-    const customerName = document.getElementById('customerName').value || 'Customer';
-    const customerEmail = document.getElementById('customerEmail').value || 'unknown@email.com';
+    if (isProcessing) return;
+
+    const customerName = document.getElementById('customerName').value.trim() || 'Customer';
+    const customerEmail = document.getElementById('customerEmail').value.trim() || 'unknown@email.com';
     const inquiryType = document.getElementById('inquiryType').value;
-    const message = document.getElementById('message').value || '';
-    const amount = parseFloat(document.getElementById('amount').value) || 0;
+    const message = document.getElementById('message').value.trim();
+    const amount = Math.max(0, parseFloat(document.getElementById('amount').value) || 0);
+
+    if (!message) {
+        flashFieldError('message', 'Enter a customer message before processing.');
+        return;
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(customerEmail)) {
+        flashFieldError('customerEmail', 'Enter a valid email address.');
+        return;
+    }
+
+    isProcessing = true;
+    setProcessButtonsDisabled(true);
 
     resetUI();
 
@@ -129,6 +147,9 @@ async function processInquiry() {
     stats.total++;
     stats.totalTime += (Date.now() - startTime);
     updateStats();
+
+    isProcessing = false;
+    setProcessButtonsDisabled(false);
 }
 
 // ============================================
@@ -520,66 +541,99 @@ function formatInquiryType(type) {
     return type.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
+function flashFieldError(fieldId, msg) {
+    const field = document.getElementById(fieldId);
+    field.classList.add('field-error');
+    field.focus();
+    const onInput = () => {
+        field.classList.remove('field-error');
+        field.removeEventListener('input', onInput);
+    };
+    field.addEventListener('input', onInput);
+    console.warn(msg);
+}
+
+function setProcessButtonsDisabled(disabled) {
+    ['btnProcess', 'btnAmbiguous', 'btnAutoApproval'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.disabled = disabled;
+    });
+}
+
+function resetDemo() {
+    currentWorkflow = null;
+    approvalQueue = [];
+    decisionLog = [];
+    stats = { total: 0, autoApproved: 0, totalTime: 0 };
+    isProcessing = false;
+    setProcessButtonsDisabled(false);
+    resetUI();
+    updateStats();
+}
+
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 // ============================================
-// DEPLOYMENT PROOF
+// DEPLOYMENT / ARCHITECTURE INFO
 // ============================================
+//
+// NOTE FOR THE TEAM: this panel intentionally does NOT claim to show a live
+// connection to any backend or cloud service. This is a static, client-side
+// front end. The hackathon rules require *real* evidence of an Alibaba
+// Cloud deployment (a separate screen recording, plus a link to a source
+// file in your repo that calls Alibaba Cloud APIs/SDKs). Faking that output
+// here would be misleading to judges, so instead this panel documents the
+// intended architecture and gives you clearly marked placeholders to drop
+// your real links into once you have them. Fill in DEPLOYMENT_LINKS below.
+
+const DEPLOYMENT_LINKS = {
+    repoUrl: 'https://github.com/Ivy1-0/intelliflow-agent',
+    proofVideoUrl: '',        // link to your real "Alibaba Cloud deployment" recording
+    proofCodeFileUrl: '',     // link to the repo file that calls Alibaba Cloud SDK/API
+    architectureDiagramUrl: 'architecture-diagram.svg',
+    demoVideoUrl: ''          // link to your ~3 min functional demo video
+};
 
 function showDeploymentProof() {
     const modal = document.getElementById('proofModal');
     const output = document.getElementById('terminalOutput');
-    const now = new Date().toISOString();
+
+    const linkRow = (label, url) => {
+        if (url) {
+            return `<div class="terminal-line"><span class="terminal-prompt">&rsaquo;</span> <span class="terminal-out" style="margin-left:8px;">${label}: <a href="${url}" target="_blank" rel="noopener" style="color:#58A6FF;">${url}</a></span></div>`;
+        }
+        return `<div class="terminal-line"><span class="terminal-prompt">&rsaquo;</span> <span class="terminal-out" style="margin-left:8px;color:#FFB300;">${label}: not set yet - add this in DEPLOYMENT_LINKS in script.js</span></div>`;
+    };
 
     output.innerHTML = `
-        <div class="terminal-line">
-            <span class="terminal-prompt">root@${CONFIG.deploymentInstance}:~$</span>
-            <span class="terminal-cmd"> cat /etc/alibaba-release</span>
+        <div class="terminal-line" style="color:#FFB300;font-weight:600;">
+            This page is a static front-end demo. It does not call a live backend.
         </div>
-        <div class="terminal-out">Alibaba Cloud Linux release 3 (ECS)</div>
-        <div class="terminal-divider">────────────────────────────────────────</div>
-        <div class="terminal-line">
-            <span class="terminal-prompt">root@${CONFIG.deploymentInstance}:~$</span>
-            <span class="terminal-cmd"> curl -s http://localhost:8000/health | python -m json.tool</span>
+        <div class="terminal-out" style="margin:6px 0 14px;">
+            The intent classification and approval logic you see run entirely in your
+            browser to illustrate the agent's decision flow. Use the links below for
+            the actual Alibaba Cloud deployment evidence required by the submission.
         </div>
-        <div class="terminal-out">{</div>
-        <div class="terminal-out">  "status": "healthy",</div>
-        <div class="terminal-out">  "qwen_model": "${CONFIG.qwenModel}",</div>
-        <div class="terminal-out">  "region": "${CONFIG.alibabaRegion}",</div>
-        <div class="terminal-out">  "instance": "${CONFIG.deploymentInstance}",</div>
-        <div class="terminal-out">  "uptime": "72h 14m 33s"</div>
-        <div class="terminal-out">}</div>
-        <div class="terminal-divider">────────────────────────────────────────</div>
-        <div class="terminal-line">
-            <span class="terminal-prompt">root@${CONFIG.deploymentInstance}:~$</span>
-            <span class="terminal-cmd"> python verify_cloud_services.py</span>
+        <div class="terminal-divider">----------------------------------------</div>
+        <div class="terminal-line"><span class="terminal-prompt">root@local:~$</span> <span class="terminal-cmd">cat deployment-evidence.txt</span></div>
+        ${linkRow('Code repository', DEPLOYMENT_LINKS.repoUrl)}
+        ${linkRow('Alibaba Cloud deployment proof (video)', DEPLOYMENT_LINKS.proofVideoUrl)}
+        ${linkRow('Source file using Alibaba Cloud SDK/API', DEPLOYMENT_LINKS.proofCodeFileUrl)}
+        ${linkRow('Architecture diagram', DEPLOYMENT_LINKS.architectureDiagramUrl)}
+        ${linkRow('Functional demo video (~3 min)', DEPLOYMENT_LINKS.demoVideoUrl)}
+        <div class="terminal-divider">----------------------------------------</div>
+        <div class="terminal-out">Intended production architecture (see architecture-diagram.svg):</div>
+        <div class="terminal-out">  Browser (this UI) -&gt; API Gateway -&gt; ECS (agent orchestrator)</div>
+        <div class="terminal-out">  ECS -&gt; DashScope (Qwen-Max) for intent classification &amp; drafting</div>
+        <div class="terminal-out">  ECS -&gt; ApsaraDB RDS for customer/order records</div>
+        <div class="terminal-out">  ECS -&gt; ApsaraDB Redis for workflow/session state</div>
+        <div class="terminal-out">  ECS -&gt; OSS for attachments &amp; audit logs</div>
+        <div class="terminal-divider">----------------------------------------</div>
+        <div class="terminal-out" style="color:#8B949E;">
+            Replace the placeholders above with real links before you submit.
         </div>
-        <div class="terminal-out">========================================</div>
-        <div class="terminal-out">ALIBABA CLOUD DEPLOYMENT VERIFICATION</div>
-        <div class="terminal-out">========================================</div>
-        <div class="terminal-out">Timestamp: ${now}</div>
-        <div class="terminal-out">Region: ${CONFIG.alibabaRegion}</div>
-        <div class="terminal-out">Instance: ${CONFIG.deploymentInstance}</div>
-        <div class="terminal-out"></div>
-        <div class="terminal-ok">[OK] DashScope (Qwen-Max) - CONFIGURED</div>
-        <div class="terminal-ok">[OK] ECS (Elastic Compute Service) - RUNNING</div>
-        <div class="terminal-ok">[OK] RDS (ApsaraDB PostgreSQL 15) - CONNECTED</div>
-        <div class="terminal-ok">[OK] Redis (ApsaraDB for Redis 6.0) - CONNECTED</div>
-        <div class="terminal-ok">[OK] OSS (Object Storage Service) - ACTIVE</div>
-        <div class="terminal-ok">[OK] API Gateway - CONFIGURED</div>
-        <div class="terminal-ok">[OK] Elasticsearch - INDEXED</div>
-        <div class="terminal-out"></div>
-        <div class="terminal-out">========================================</div>
-        <div class="terminal-ok">ALL ALIBABA CLOUD SERVICES OPERATIONAL</div>
-        <div class="terminal-out">========================================</div>
-        <div class="terminal-divider">────────────────────────────────────────</div>
-        <div class="terminal-line">
-            <span class="terminal-prompt">root@${CONFIG.deploymentInstance}:~$</span>
-            <span class="terminal-cmd"> echo "IntelliFlow Agent backend running on Alibaba Cloud ECS"</span>
-        </div>
-        <div class="terminal-ok">IntelliFlow Agent backend running on Alibaba Cloud ECS</div>
     `;
 
     modal.style.display = 'flex';
