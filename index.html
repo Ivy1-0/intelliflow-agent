@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntelliFlow Agent - Alibaba Cloud Hackathon</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <span class="logo-icon">🤖</span>
+            <h1>IntelliFlow Agent</h1>
+        </div>
+        <div class="header-status">
+            <span class="status-dot"></span>
+            Running on Alibaba Cloud ECS
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        
+        <!-- Left Panel - Customer Inquiry -->
+        <div class="panel inquiry-panel">
+            <h2>📨 Customer Inquiry</h2>
+            
+            <div class="form-group">
+                <label>Customer Name:</label>
+                <input type="text" id="customerName" value="John Smith" placeholder="Enter customer name">
+            </div>
+            
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="customerEmail" value="john@example.com" placeholder="customer@email.com">
+            </div>
+            
+            <div class="form-group">
+                <label>Inquiry Type:</label>
+                <select id="inquiryType">
+                    <option value="quote_request">Quote Request</option>
+                    <option value="support">Technical Support</option>
+                    <option value="complaint">Complaint</option>
+                    <option value="refund">Refund Request</option>
+                    <option value="information">General Information</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Message:</label>
+                <textarea id="message" rows="4" placeholder="Customer's message...">I need pricing for 10 enterprise licenses with premium support. Also having issues with my last order #12345. Can you help with both?</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Amount (if applicable):</label>
+                <input type="number" id="amount" value="7500" placeholder="0">
+            </div>
+            
+            <button class="btn btn-primary" onclick="processInquiry()">
+                ⚡ Process Inquiry
+            </button>
+            
+            <button class="btn btn-secondary" onclick="testAmbiguousInput()">
+                🔄 Test Ambiguous Input
+            </button>
+        </div>
+
+        <!-- Center Panel - Workflow Status -->
+        <div class="panel workflow-panel">
+            <h2>🔄 Workflow Engine</h2>
+            
+            <div id="workflowStatus" class="workflow-status">
+                <p class="waiting-message">Waiting for inquiry...</p>
+            </div>
+            
+            <div id="workflowSteps" class="workflow-steps">
+                <!-- Steps appear here dynamically -->
+            </div>
+            
+            <div id="intentResults" class="intent-results" style="display:none;">
+                <h3>Intent Classification (Qwen AI)</h3>
+                <div id="intentList"></div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Human-in-the-Loop -->
+        <div class="panel approval-panel">
+            <h2>👤 Human-in-the-Loop</h2>
+            
+            <div id="approvalStatus" class="approval-status">
+                <p class="waiting-message">No pending approvals</p>
+            </div>
+            
+            <div id="approvalQueue" class="approval-queue">
+                <!-- Approval requests appear here -->
+            </div>
+            
+            <div id="escalationLog" class="escalation-log">
+                <h3>Escalation Log</h3>
+                <div id="escalationList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Architecture Diagram Section -->
+    <div class="architecture-section">
+        <h2>🏗️ System Architecture (Alibaba Cloud)</h2>
+        <div class="architecture-diagram">
+            <pre id="architectureAscii">
+╔══════════════════════════════════════════════════════════╗
+║                    FRONTEND (Browser)                    ║
+║         HTML/CSS/JavaScript - Customer Dashboard         ║
+╚═══════════════════════╦══════════════════════════════════╝
+                        ║
+╔═══════════════════════╩══════════════════════════════════╗
+║              ALIBABA CLOUD ECS (Backend)                 ║
+║  ┌────────────────────────────────────────────────────┐ ║
+║  │  Workflow Engine │ Intent Classifier │ Human Loop  │ ║
+║  └────────────────────────────────────────────────────┘ ║
+╚═══════════════════════╦══════════════════════════════════╝
+                        ║
+╔═══════════════════════╩══════════════════════════════════╗
+║                  ALIBABA CLOUD SERVICES                  ║
+║  ┌──────────┐ ┌──────────┐ ┌─────────┐ ┌────────────┐  ║
+║  │ DashScope│ │  RDS     │ │  Redis  │ │    OSS     │  ║
+║  │ (Qwen AI)│ │(PostgreSQL)│ │(Cache)  │ │ (Storage)  │  ║
+║  └──────────┘ └──────────┘ └─────────┘ └────────────┘  ║
+╚══════════════════════════════════════════════════════════╝
+            </pre>
+        </div>
+    </div>
+
+    <!-- Alibaba Cloud Status -->
+    <div class="cloud-status">
+        <h2>☁️ Alibaba Cloud Services Status</h2>
+        <div id="cloudServices">
+            <div class="service-card">✅ DashScope (Qwen AI)</div>
+            <div class="service-card">✅ ECS (Server)</div>
+            <div class="service-card">✅ RDS (Database)</div>
+            <div class="service-card">✅ Redis (Cache)</div>
+            <div class="service-card">✅ OSS (Storage)</div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>🏆 Alibaba Cloud Hackathon Submission - Track 2: Enterprise Workflow Automation</p>
+        <p>GitHub: <a href="https://github.com/Ivy1-0/intelliflow-agent">Ivy1-0/intelliflow-agent</a></p>
+        <p>License: Apache 2.0</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
