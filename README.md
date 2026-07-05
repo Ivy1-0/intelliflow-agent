@@ -1,86 +1,69 @@
-# IntelliFlow Agent
+# DataPilot Agent - Autonomous Data Analyst
 
-An interactive front-end demo of an end-to-end business-workflow agent: a customer inquiry comes in, the agent classifies intent (including ambiguous, multi-intent messages), pulls customer context, checks it against approval thresholds, and either auto-completes the workflow or routes it to a human reviewer who can approve, reject, or escalate — with every decision recorded to an auditable log.
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Alibaba Cloud](https://img.shields.io/badge/Deployed%20on-Alibaba%20Cloud-orange)](https://www.alibabacloud.com)
+[![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
 
-**Track:** Track 2 — Enterprise Workflow Automation
+## 🏆 Hackathon Track
+**Track 4: Autopilot Agent** — *"An autonomous data analyst that ingests datasets, identifies patterns, generates visualizations, and writes reports."*
 
-## What this is (and isn't)
+---
 
-This repository currently contains a **static front-end** (`index.html`, `style.css`, `script.js`) that runs the full workflow logic — intent classification, entity lookup, threshold-based approval routing, and decision logging — client-side in the browser, so you can see and interact with the agent's decision-making without standing up infrastructure first.
+## 🎯 Overview
 
-It is **not**, by itself, proof of a live backend or a live Alibaba Cloud deployment. The in-app "Architecture & Links" button (bottom toolbar) opens a panel that is explicit about this and gives you a place to record:
+DataPilot Agent is an autonomous data-analyst agent that takes a raw CSV dataset and, without any human input mid-flow, runs it through every stage of analysis end to end:
 
-- a link to the actual source file in this repo that calls Alibaba Cloud APIs/SDKs (e.g. a DashScope client, an ECS/RDS/OSS integration script),
-- a link to the real screen recording proving the backend is deployed and running on Alibaba Cloud,
-- a link to your ~3 minute functional demo video,
-- a link to the architecture diagram.
+**Ingest → Profile → Detect Patterns → Verify → Visualize → Report**
 
-Fill these in via the `DEPLOYMENT_LINKS` object near the top of `script.js` before submitting. Do not present simulated output as if it were a live system check — judges will be looking for genuine evidence.
+The distinguishing feature is the **verification-and-self-heal loop**: after generating findings, the agent independently recomputes its own key statistic and checks it against what it produced. If the two disagree, it doesn't stop and wait for a person — it re-runs the affected stage itself, logs what it did in the Autonomy Log, and only escalates to a human if it exhausts its retry budget. This is the core difference between an *autopilot* agent and a workflow that merely pauses for approval.
 
-## Features
+Built entirely with **HTML, CSS, and JavaScript** — no build step, no backend required, runs by opening `index.html`. The frontend simulates integration with Alibaba Cloud services (Qwen AI / DashScope for the narrative report, RDS for profile storage, OSS for report archival, ECS for job execution).
 
-- **Multi-intent classification** — detects when a single customer message contains several distinct requests (e.g. a quote request *and* a complaint about a past order) and flags it as ambiguous rather than silently picking one.
-- **Entity extraction / customer lookup** — resolves the inquiry against a customer record (new vs. returning, credit limit, purchase history) to inform downstream decisions.
-- **Threshold-based approval routing** — quote amount, discount percentage, refund amount, and new-customer credit limit are all configurable thresholds (`CONFIG.approvalThresholds` in `script.js`). Inquiries that exceed them are routed to a human reviewer instead of being auto-completed.
-- **Human-in-the-loop console** — pending approvals appear in a queue with the specific reason(s) they were flagged; a reviewer can Approve, Reject, or Escalate, and the workflow resumes accordingly.
-- **Decision log** — every approval/rejection/escalation is timestamped and recorded for auditability.
-- **Live stats** — total processed, auto-approval rate, and average processing time update as you run workflows.
-- **Test scenarios** — "Test Ambiguous" and "Test Auto-Approval" buttons pre-fill realistic inputs so reviewers can see both code paths without typing.
+---
 
-## Project structure
+## ✨ Key Features
 
-```
-index.html               Page markup
-style.css                 Styling
-script.js                 Workflow engine, approval logic, UI wiring
-architecture-diagram.svg  System architecture diagram
-LICENSE                   Apache 2.0
-README.md                 This file
-```
+| Feature | Description |
+|---------|-------------|
+| 🔄 **Fully Autonomous Pipeline** | Six stages run back-to-back with no human checkpoint required to proceed |
+| 🛠️ **Self-Healing Ingestion** | Detects malformed rows and bad values, auto-repairs them, and logs every decision |
+| 🧠 **Pattern Detection** | Computes trends (linear regression), correlations (Pearson), and anomalies (z-score) |
+| ✅ **Self-Verification** | Independently recomputes its own headline statistic and re-runs the stage if it disagrees with itself |
+| 📊 **Auto-Generated Visualizations** | Inline SVG trend, distribution, and correlation charts, no charting library needed |
+| 📝 **Narrative Report Writer** | Assembles a plain-English report of findings, fixes made, and recommendations |
+| ⚠️ **Escalation as Last Resort** | Only surfaces to a human if self-healing itself fails repeatedly |
+| ☁️ **Alibaba Cloud Integration** | Simulated integration with Qwen AI, RDS, Redis-adjacent caching, and OSS |
 
-## Running locally
+---
 
-No build step or dependencies — it's plain HTML/CSS/JS.
+## 🚀 Quick Start
 
-```bash
-# from the repo root
-python3 -m http.server 8080
-# then open http://localhost:8080
-```
+### No Installation Required
 
-Or just open `index.html` directly in a browser.
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Ivy1-0/intelliflow-agent.git
+   ```
+2. Open `index.html` in a browser.
+3. Pick a sample dataset (or paste your own CSV) and click **Run Autopilot**.
+4. Click **Run With Injected Fault** to watch the agent deliberately encounter a bad verification result and self-heal without any human clicking anything.
 
-## Intended production architecture
+---
 
-See `architecture-diagram.svg`. In production, the browser talks to an API Gateway in front of an ECS-hosted agent orchestrator, which calls DashScope (Qwen-Max) for intent classification and response drafting, ApsaraDB RDS for customer/order records, ApsaraDB Redis for workflow/session state, and OSS for attachments and audit-log archival.
+## 🧭 Why This Fits Track 4
 
-## Configuration
+Track 4 asks for an agent that autonomously completes a multi-step workflow start to finish, with the explicit example of *"an autonomous data analyst that ingests datasets, identifies patterns, generates visualizations, and writes reports."* DataPilot Agent implements exactly that pipeline, and adds the self-correction loop (detect → retry → verify again) that separates an autopilot agent from a single-step classifier with a human approval gate.
 
-Approval thresholds and other agent settings live in the `CONFIG` object at the top of `script.js`:
+---
 
-```js
-const CONFIG = {
-  qwenModel: 'qwen-max-2024-09-19',
-  approvalThresholds: {
-    quoteAmount: 5000,
-    discountPercentage: 15,
-    refundAmount: 1000,
-    newCustomerCredit: 50000
-  }
-};
-```
+## 🏗️ Architecture
 
-## License
+![Architecture](architecture.svg)
 
-Apache License 2.0 — see [LICENSE](./LICENSE).
+The frontend runs the full pipeline entirely client-side for the zero-install demo. The `backend/` service is the real Alibaba Cloud integration layer — it makes genuine calls to DashScope (Qwen-Max) for report generation and to OSS for archival. See [`backend/main.py`](backend/main.py) and [`DEPLOY.md`](DEPLOY.md) for how it's deployed and verified on Alibaba Cloud ECS.
 
-## Submission checklist
+## 📄 Submission details
 
-- [ ] Public repo with this README, source, and LICENSE
-- [ ] License visible in the repo's "About" section
-- [ ] Real Alibaba Cloud deployment-proof recording linked (see `DEPLOYMENT_LINKS.proofVideoUrl`)
-- [ ] Link to the repo source file demonstrating Alibaba Cloud SDK/API usage (`DEPLOYMENT_LINKS.proofCodeFileUrl`)
-- [ ] Architecture diagram included (`architecture-diagram.svg`)
-- [ ] ~3 minute public demo video (YouTube/Vimeo/Facebook) linked (`DEPLOYMENT_LINKS.demoVideoUrl`)
-- [ ] Track identified (Track 2 — Enterprise Workflow Automation)
-- [ ] (Optional) Blog/social post link for the Blog Post Prize
+See [`SUBMISSION.md`](SUBMISSION.md) for the full feature/functionality writeup used in the hackathon submission form.

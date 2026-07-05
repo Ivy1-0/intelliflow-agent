@@ -3,561 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IntelliFlow Agent · Alibaba Cloud</title>
-    <style>
-        /* ── reset & base ── */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background: #0B0E14;
-            font-family: 'Inter', -apple-system, system-ui, sans-serif;
-            color: #E6EDF3;
-            line-height: 1.5;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* ── top nav ── */
-        .top-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 32px;
-            background: #161B22;
-            border-bottom: 1px solid #30363D;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 28px;
-            flex-wrap: wrap;
-        }
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .logo-text {
-            font-weight: 700;
-            font-size: 20px;
-            background: linear-gradient(135deg, #FF6A00, #EE0979);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-        .nav-link {
-            color: #8B949E;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 14px;
-            transition: 0.2s;
-        }
-        .nav-link.active {
-            color: #E6EDF3;
-        }
-        .nav-link:hover {
-            color: #E6EDF3;
-        }
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        .cloud-badge {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: #1C2333;
-            padding: 4px 12px 4px 8px;
-            border-radius: 20px;
-            border: 1px solid #2D3748;
-            font-size: 13px;
-            color: #8B949E;
-        }
-        .cloud-badge span {
-            color: #E6EDF3;
-        }
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            color: #8B949E;
-        }
-        .status-pulse {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #00C853;
-            box-shadow: 0 0 8px #00C85388;
-            animation: pulse 1.8s infinite;
-        }
-        @keyframes pulse {
-            0% { opacity: 0.6; transform: scale(0.9); }
-            50% { opacity: 1; transform: scale(1.2); }
-            100% { opacity: 0.6; transform: scale(0.9); }
-        }
-
-        /* ── main layout ── */
-        .main-content {
-            display: flex;
-            gap: 24px;
-            padding: 24px 32px;
-            flex: 1;
-            flex-wrap: wrap;
-        }
-        .sidebar {
-            flex: 0 0 280px;
-            min-width: 240px;
-        }
-        .sidebar-left {
-            flex: 0 0 300px;
-        }
-        .sidebar-right {
-            flex: 0 0 300px;
-        }
-        .content-center {
-            flex: 1;
-            min-width: 400px;
-        }
-
-        /* ── cards ── */
-        .card {
-            background: #161B22;
-            border: 1px solid #30363D;
-            border-radius: 12px;
-            padding: 18px 20px 20px;
-            margin-bottom: 18px;
-        }
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 16px;
-            color: #8B949E;
-        }
-        .card-header h3 {
-            font-weight: 600;
-            font-size: 16px;
-            color: #E6EDF3;
-            margin-right: auto;
-        }
-        .card-header svg {
-            flex-shrink: 0;
-        }
-        .badge {
-            font-size: 11px;
-            padding: 2px 12px;
-            border-radius: 30px;
-            background: #1C2333;
-            color: #8B949E;
-            border: 1px solid #30363D;
-        }
-        .badge-qwen {
-            background: #0F2A1F;
-            color: #3FB950;
-            border-color: #2D6A4F;
-        }
-        .badge-pending {
-            background: #3D2A1A;
-            color: #FFA657;
-            border-color: #B26B2A;
-        }
-
-        /* ── form elements ── */
-        .input-group {
-            margin-bottom: 14px;
-        }
-        .input-label {
-            display: block;
-            font-size: 12px;
-            font-weight: 500;
-            color: #8B949E;
-            margin-bottom: 4px;
-        }
-        .input-field {
-            width: 100%;
-            padding: 8px 12px;
-            background: #0D1117;
-            border: 1px solid #30363D;
-            border-radius: 8px;
-            color: #E6EDF3;
-            font-size: 13px;
-            transition: 0.2s;
-        }
-        .input-field:focus {
-            outline: none;
-            border-color: #FF6A00;
-        }
-        .select-field {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B949E' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-        }
-        .textarea-field {
-            resize: vertical;
-            min-height: 70px;
-        }
-        .input-row {
-            display: flex;
-            gap: 12px;
-        }
-        .flex-1 {
-            flex: 1;
-        }
-        .btn-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 6px;
-        }
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 500;
-            font-size: 13px;
-            border: none;
-            cursor: pointer;
-            transition: 0.15s;
-            background: #21262D;
-            color: #E6EDF3;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #FF6A00, #EE0979);
-            color: #fff;
-        }
-        .btn-primary:hover {
-            filter: brightness(1.1);
-        }
-        .btn-outline {
-            border: 1px solid #30363D;
-            background: transparent;
-        }
-        .btn-outline:hover {
-            background: #1C2333;
-        }
-        .btn-ghost {
-            background: transparent;
-            color: #8B949E;
-        }
-        .btn-ghost:hover {
-            background: #1C2333;
-            color: #E6EDF3;
-        }
-
-        /* ── stats ── */
-        .stats-card {
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 10px;
-        }
-        .stat-item {
-            text-align: center;
-        }
-        .stat-value {
-            display: block;
-            font-size: 20px;
-            font-weight: 700;
-            color: #E6EDF3;
-        }
-        .stat-label {
-            font-size: 11px;
-            color: #8B949E;
-        }
-        .stat-divider {
-            width: 1px;
-            background: #30363D;
-        }
-
-        /* ── workflow timeline ── */
-        .workflow-status-placeholder {
-            min-height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            color: #8B949E;
-            text-align: center;
-            padding: 16px 0;
-        }
-        .empty-state svg {
-            opacity: 0.5;
-        }
-        .workflow-timeline {
-            margin-top: 8px;
-        }
-        .step-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 8px 0;
-            border-bottom: 1px solid #1C2333;
-        }
-        .step-icon {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: #1C2333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 13px;
-        }
-        .step-icon.done {
-            background: #0F2A1F;
-            color: #3FB950;
-        }
-        .step-icon.pending {
-            background: #3D2A1A;
-            color: #FFA657;
-        }
-        .step-content {
-            flex: 1;
-        }
-        .step-title {
-            font-weight: 500;
-            font-size: 14px;
-        }
-        .step-desc {
-            font-size: 13px;
-            color: #8B949E;
-        }
-
-        /* ── intent panel ── */
-        .intent-panel {
-            margin-top: 16px;
-            padding-top: 12px;
-            border-top: 1px solid #30363D;
-        }
-        .panel-title {
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 8px;
-            color: #8B949E;
-        }
-        .intent-tag {
-            display: inline-block;
-            background: #1C2333;
-            padding: 2px 14px;
-            border-radius: 30px;
-            font-size: 13px;
-            margin: 2px 6px 2px 0;
-            border: 1px solid #30363D;
-        }
-        .ambiguity-alert {
-            margin-top: 10px;
-            background: #3D2A1A;
-            border-left: 3px solid #FFA657;
-            padding: 8px 14px;
-            border-radius: 6px;
-            font-size: 13px;
-            color: #FFA657;
-        }
-
-        /* ── approval queue ── */
-        .approval-item {
-            background: #0D1117;
-            padding: 10px 12px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border-left: 3px solid #FFA657;
-        }
-        .approval-item .small {
-            font-size: 12px;
-            color: #8B949E;
-        }
-        .approval-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 6px;
-        }
-        .approval-actions .btn {
-            padding: 4px 14px;
-            font-size: 12px;
-        }
-
-        /* ── arch bar ── */
-        .arch-bar {
-            background: #161B22;
-            border-top: 1px solid #30363D;
-            border-bottom: 1px solid #30363D;
-            padding: 12px 32px;
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px 28px;
-            margin: 0 0 0 0;
-        }
-        .arch-bar-title {
-            font-weight: 600;
-            color: #8B949E;
-            font-size: 13px;
-            letter-spacing: 0.3px;
-        }
-        .arch-services {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .arch-service {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: #8B949E;
-            font-size: 13px;
-        }
-        .arch-divider {
-            width: 1px;
-            height: 18px;
-            background: #30363D;
-        }
-        .btn-proof {
-            margin-left: auto;
-            background: transparent;
-            border: 1px solid #30363D;
-            color: #E6EDF3;
-            padding: 4px 16px;
-            border-radius: 30px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .btn-proof:hover {
-            background: #1C2333;
-            border-color: #FF6A00;
-        }
-
-        /* ── modal ── */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(4px);
-            z-index: 999;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-        }
-        .modal-overlay.active {
-            display: flex;
-        }
-        .modal-container {
-            background: #0D1117;
-            border: 1px solid #30363D;
-            border-radius: 16px;
-            max-width: 780px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 24px;
-            border-bottom: 1px solid #30363D;
-        }
-        .modal-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-            color: #E6EDF3;
-        }
-        .modal-close {
-            background: transparent;
-            border: none;
-            color: #8B949E;
-            cursor: pointer;
-            padding: 4px;
-        }
-        .modal-close:hover {
-            color: #E6EDF3;
-        }
-        .modal-body {
-            padding: 24px;
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            font-size: 14px;
-            color: #00FF88;
-            white-space: pre-wrap;
-            word-break: break-word;
-            line-height: 1.7;
-        }
-        .terminal-modal .modal-body {
-            background: #0B0E14;
-        }
-
-        /* ── footer ── */
-        .footer {
-            margin-top: auto;
-            padding: 16px 32px;
-            border-top: 1px solid #30363D;
-            background: #161B22;
-            font-size: 13px;
-            color: #8B949E;
-            text-align: center;
-        }
-        .footer-content {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 6px 18px;
-        }
-        .footer-divider {
-            color: #30363D;
-        }
-        .footer-link {
-            color: #58A6FF;
-            text-decoration: none;
-        }
-        .footer-link:hover {
-            text-decoration: underline;
-        }
-
-        /* ── responsive ── */
-        @media (max-width: 1100px) {
-            .sidebar-left, .sidebar-right {
-                flex: 1 1 100%;
-            }
-            .content-center {
-                min-width: unset;
-            }
-        }
-        @media (max-width: 700px) {
-            .top-nav { flex-direction: column; align-items: stretch; }
-            .nav-left { flex-wrap: wrap; }
-            .nav-right { justify-content: space-between; }
-            .main-content { padding: 16px; }
-            .arch-bar { flex-direction: column; align-items: stretch; }
-            .btn-proof { margin-left: 0; }
-        }
-    </style>
+    <title>DataPilot Agent - Autonomous Data Analyst | Alibaba Cloud</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Top Navigation -->
+    <!-- Top Navigation Bar -->
     <nav class="top-nav">
         <div class="nav-left">
             <div class="logo">
@@ -572,12 +23,12 @@
                         </linearGradient>
                     </defs>
                 </svg>
-                <span class="logo-text">IntelliFlow</span>
+                <span class="logo-text">DataPilot</span>
             </div>
             <div class="nav-links">
-                <a href="#" class="nav-link active">Workflow</a>
-                <a href="#" class="nav-link">Analytics</a>
-                <a href="#" class="nav-link">Settings</a>
+                <a href="#" class="nav-link active" data-page="autopilot" onclick="switchPage(event,'autopilot')">Autopilot</a>
+                <a href="#" class="nav-link" data-page="analytics" onclick="switchPage(event,'analytics')">Analytics</a>
+                <a href="#" class="nav-link" data-page="settings" onclick="switchPage(event,'settings')">Settings</a>
             </div>
         </div>
         <div class="nav-right">
@@ -589,69 +40,78 @@
             </div>
             <div class="status-indicator">
                 <div class="status-pulse"></div>
-                <span>Demo Mode</span>
+                <span>ECS Running</span>
             </div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="main-content">
-        <!-- Left Sidebar -->
+    <main class="main-content page active" id="page-autopilot">
+
+        <!-- Left Sidebar - Dataset Input -->
         <aside class="sidebar sidebar-left">
             <div class="card">
                 <div class="card-header">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                     </svg>
-                    <h3>Customer Inquiry</h3>
+                    <h3>Dataset Source</h3>
                 </div>
                 <div class="card-body">
                     <div class="input-group">
-                        <label class="input-label">Customer Name</label>
-                        <input type="text" id="customerName" class="input-field" value="John Smith">
+                        <label class="input-label">Sample Dataset</label>
+                        <select id="datasetSelect" class="input-field select-field" onchange="loadSampleDataset()">
+                            <option value="sales">Monthly Sales (12 regions)</option>
+                            <option value="servers">Server Response Metrics</option>
+                            <option value="traffic">Website Traffic Log</option>
+                            <option value="custom">Custom (paste or upload below)</option>
+                        </select>
                     </div>
                     <div class="input-group">
-                        <label class="input-label">Email</label>
-                        <input type="email" id="customerEmail" class="input-field" value="john@example.com">
-                    </div>
-                    <div class="input-row">
-                        <div class="input-group flex-1">
-                            <label class="input-label">Inquiry Type</label>
-                            <select id="inquiryType" class="input-field select-field">
-                                <option value="quote_request">Quote Request</option>
-                                <option value="support">Technical Support</option>
-                                <option value="complaint">Complaint</option>
-                                <option value="refund">Refund Request</option>
-                                <option value="information">General Inquiry</option>
-                            </select>
+                        <label class="input-label">Upload CSV File</label>
+                        <div class="dropzone" id="dropzone">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                            <p>Drag &amp; drop a CSV file, or <span class="dropzone-link">click to browse</span></p>
+                            <span class="file-name-label" id="fileNameLabel"></span>
                         </div>
-                        <div class="input-group flex-1">
-                            <label class="input-label">Amount ($)</label>
-                            <input type="number" id="amount" class="input-field" value="7500">
-                        </div>
+                        <input type="file" id="fileInput" accept=".csv,text/csv" style="display:none;">
                     </div>
                     <div class="input-group">
-                        <label class="input-label">Message</label>
-                        <textarea id="message" class="input-field textarea-field" rows="3">I need pricing for 10 enterprise licenses with premium support. Also having issues with my last order #12345. Can you help with both?</textarea>
+                        <label class="input-label">CSV Data</label>
+                        <textarea id="csvInput" class="input-field textarea-field" rows="7" placeholder="Paste CSV data..."></textarea>
                     </div>
                     <div class="btn-group">
-                        <button class="btn btn-primary" id="btnProcess">▶ Process Inquiry</button>
-                        <button class="btn btn-outline" id="btnAmbiguous">⚡ Test Ambiguous</button>
-                        <button class="btn btn-ghost" id="btnAutoApproval">✓ Auto-Approval</button>
-                        <button class="btn btn-ghost" id="btnReset">↺ Reset</button>
+                        <button class="btn btn-primary" onclick="runAutopilot()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="5 3 19 12 5 21 5 3"/>
+                            </svg>
+                            Run Autopilot
+                        </button>
+                        <button class="btn btn-outline" onclick="runAutopilot(true)">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                            </svg>
+                            Run With Injected Fault
+                        </button>
                     </div>
+                    <p class="hint-text">The second button deliberately corrupts a mid-pipeline value so you can watch the agent detect it and self-heal without any human input.</p>
                 </div>
             </div>
 
+            <!-- Quick Stats -->
             <div class="card stats-card">
                 <div class="stat-item">
-                    <span class="stat-value" id="totalProcessed">0</span>
-                    <span class="stat-label">Processed</span>
+                    <span class="stat-value" id="totalRuns">0</span>
+                    <span class="stat-label">Runs Completed</span>
                 </div>
                 <div class="stat-divider"></div>
                 <div class="stat-item">
-                    <span class="stat-value" id="approvalRate">0%</span>
-                    <span class="stat-label">Auto-Approval Rate</span>
+                    <span class="stat-value" id="selfHealCount">0</span>
+                    <span class="stat-label">Self-Heals</span>
                 </div>
                 <div class="stat-divider"></div>
                 <div class="stat-item">
@@ -661,18 +121,18 @@
             </div>
         </aside>
 
-        <!-- Center -->
+        <!-- Center - Autopilot Execution Engine -->
         <section class="content-center">
             <div class="card">
                 <div class="card-header">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
                     </svg>
-                    <h3>Workflow Engine</h3>
-                    <span class="badge badge-qwen">Qwen-Max (sim)</span>
+                    <h3>Autopilot Execution</h3>
+                    <span class="badge badge-qwen">Qwen-Max</span>
                 </div>
                 <div class="card-body">
-                    <div id="workflowStatus">
+                    <div id="workflowStatus" class="workflow-status-placeholder">
                         <div class="empty-state">
                             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -681,21 +141,46 @@
                                 <line x1="16" y1="17" x2="8" y2="17"/>
                                 <polyline points="10 9 9 9 8 9"/>
                             </svg>
-                            <p>Submit an inquiry to start</p>
+                            <p>Select a dataset and run the autopilot — it completes every stage on its own</p>
                         </div>
                     </div>
                     <div id="workflowSteps" class="workflow-timeline"></div>
-                    <div id="intentResults" class="intent-panel" style="display:none;">
-                        <div class="panel-title">Intent Classification</div>
-                        <div id="intentList"></div>
-                        <div id="ambiguityWarning" class="ambiguity-alert" style="display:none;"></div>
-                    </div>
+                </div>
+            </div>
+
+            <div class="card" id="chartsCard" style="display:none;">
+                <div class="card-header">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+                    </svg>
+                    <h3>Generated Visualizations</h3>
+                </div>
+                <div class="card-body">
+                    <div id="chartsGrid" class="charts-grid"></div>
                 </div>
             </div>
         </section>
 
-        <!-- Right Sidebar -->
+        <!-- Right Sidebar - Findings, Autonomy Log, Report -->
         <aside class="sidebar sidebar-right">
+            <div class="card">
+                <div class="card-header">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                    </svg>
+                    <h3>Patterns Detected</h3>
+                    <span class="badge badge-pending" id="patternCount">0</span>
+                </div>
+                <div class="card-body">
+                    <div id="patternStatus">
+                        <div class="empty-state">
+                            <p style="font-size:13px;">No patterns yet</p>
+                        </div>
+                    </div>
+                    <div id="patternList"></div>
+                </div>
+            </div>
+
             <div class="card">
                 <div class="card-header">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -704,24 +189,18 @@
                         <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
                         <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                     </svg>
-                    <h3>Human-in-the-Loop</h3>
-                    <span class="badge badge-pending" id="pendingCount">0</span>
+                    <h3>Autonomy Log</h3>
                 </div>
                 <div class="card-body">
-                    <div id="approvalStatus">
+                    <div id="autonomyList">
                         <div class="empty-state">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
-                                <path d="M9 12l2 2 4-4"/>
-                                <circle cx="12" cy="12" r="10"/>
-                            </svg>
-                            <p>No pending approvals</p>
+                            <p style="font-size:13px;">No autonomous decisions recorded</p>
                         </div>
                     </div>
-                    <div id="approvalQueue"></div>
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card" id="reportCard" style="display:none;">
                 <div class="card-header">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -729,36 +208,146 @@
                         <line x1="16" y1="13" x2="8" y2="13"/>
                         <line x1="16" y1="17" x2="8" y2="17"/>
                     </svg>
-                    <h3>Decision Log</h3>
+                    <h3>Final Report</h3>
                 </div>
                 <div class="card-body">
-                    <div id="escalationList">
-                        <div class="empty-state"><p style="font-size:13px;">No decisions recorded</p></div>
+                    <div id="reportBody" class="report-body"></div>
+                    <div class="btn-group" style="margin-top:12px;">
+                        <button class="btn btn-outline" onclick="exportReport()">Export .txt</button>
+                        <button class="btn btn-primary" onclick="exportReportPDF()">Export PDF</button>
                     </div>
                 </div>
             </div>
         </aside>
     </main>
 
+    <!-- Analytics Page -->
+    <main class="page-content page" id="page-analytics">
+        <div class="card">
+            <div class="card-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.1-2.8-2.8L7 14"/>
+                </svg>
+                <h3>Autopilot Analytics</h3>
+            </div>
+            <div class="card-body">
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <span class="stat-value" id="analyticsTotalRuns">0</span>
+                        <span class="stat-label">Total Runs</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="analyticsSelfHeals">0</span>
+                        <span class="stat-label">Total Self-Heals</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="analyticsAvgTime">0s</span>
+                        <span class="stat-label">Avg. Time / Run</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="analyticsEscalations">0</span>
+                        <span class="stat-label">Escalations</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>Self-Heals Per Run</h3>
+            </div>
+            <div class="card-body">
+                <div id="analyticsChart"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>Run History</h3>
+            </div>
+            <div class="card-body">
+                <div id="analyticsHistory">
+                    <div class="empty-state"><p style="font-size:13px;">No runs yet — go to the Autopilot tab and click Run Autopilot.</p></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Settings Page -->
+    <main class="page-content page" id="page-settings">
+        <div class="card">
+            <div class="card-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+                <h3>Pipeline Configuration</h3>
+            </div>
+            <div class="card-body">
+                <div class="input-group">
+                    <label class="input-label">Anomaly Z-Score Threshold</label>
+                    <input type="number" id="zThresholdInput" class="input-field" value="2.5" step="0.1" min="1">
+                    <p class="hint-text">Values with |z| above this are flagged as anomalies. Lower = more sensitive.</p>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Max Self-Heal Retries</label>
+                    <input type="number" id="maxRetriesInput" class="input-field" value="3" step="1" min="1" max="10">
+                    <p class="hint-text">How many times the agent retries verification before escalating to a human.</p>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Verification Tolerance (%)</label>
+                    <input type="number" id="toleranceInput" class="input-field" value="0.1" step="0.01" min="0.01">
+                    <p class="hint-text">How far a recomputed statistic may drift from the original before it's flagged as a mismatch.</p>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Backend URL (optional)</label>
+                    <input type="text" id="backendUrlSetting" class="input-field" placeholder="http://your-ecs-ip:8000 — leave blank for offline mode">
+                    <p class="hint-text">If set, reports are written by a real DashScope Qwen-Max call through your Alibaba Cloud backend instead of the local generator.</p>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+                    <button class="btn btn-outline" onclick="resetStats()">Reset Stats &amp; History</button>
+                </div>
+                <p class="hint-text" id="settingsStatus"></p>
+            </div>
+        </div>
+    </main>
+
     <!-- Architecture Bar -->
     <div class="arch-bar">
         <div class="arch-bar-title">Alibaba Cloud Infrastructure</div>
         <div class="arch-services">
-            <div class="arch-service"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C853" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg><span>DashScope</span></div>
+            <div class="arch-service">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C853" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+                </svg>
+                <span>DashScope</span>
+            </div>
             <div class="arch-divider"></div>
-            <div class="arch-service"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C853" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg><span>ECS</span></div>
+            <div class="arch-service">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C853" stroke-width="2">
+                    <rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/>
+                </svg>
+                <span>ECS</span>
+            </div>
             <div class="arch-divider"></div>
-            <div class="arch-service"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C853" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg><span>RDS</span></div>
+            <div class="arch-service">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C853" stroke-width="2">
+                    <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+                </svg>
+                <span>RDS</span>
+            </div>
             <div class="arch-divider"></div>
-            <div class="arch-service"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C853" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>Redis</span></div>
-            <div class="arch-divider"></div>
-            <div class="arch-service"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C853" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span>OSS</span></div>
+            <div class="arch-service">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C853" stroke-width="2">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+                <span>OSS</span>
+            </div>
         </div>
-        <!-- DEPLOYMENT PROOF BUTTON — hidden from source? we inject via JS -->
-        <button class="btn-proof" id="deployProofBtn">🔍 Deployment Proof</button>
+        <button class="btn-proof" onclick="showDeploymentProof()">Deployment Proof</button>
     </div>
 
-    <!-- Modal -->
+    <!-- Deployment Proof Modal -->
     <div id="proofModal" class="modal-overlay">
         <div class="modal-container terminal-modal">
             <div class="modal-header">
@@ -766,9 +355,9 @@
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00ff00" stroke-width="2">
                         <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
                     </svg>
-                    <span>Architecture &amp; Deployment Links</span>
+                    <span>Alibaba Cloud Deployment Verification</span>
                 </div>
-                <button class="modal-close" id="closeModalBtn">
+                <button class="modal-close" onclick="closeModal()">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                     </svg>
@@ -783,252 +372,15 @@
         <div class="footer-content">
             <span>Alibaba Cloud Hackathon Submission</span>
             <span class="footer-divider">|</span>
-            <span>Track 2: Enterprise Workflow Automation</span>
+            <span>Track 4: Autopilot Agent</span>
             <span class="footer-divider">|</span>
-            <a href="#" class="footer-link">GitHub</a>
+            <a href="https://github.com/Ivy1-0/intelliflow-agent" class="footer-link">GitHub</a>
             <span class="footer-divider">|</span>
             <span>Apache 2.0</span>
         </div>
     </footer>
 
-    <script>
-        (function() {
-            // ── inject deployment proof HTML into modal (hidden from view source) ──
-            const terminalContent = `
-        root@intelliflow-backend:~$ cat /etc/alibaba-release
-        Alibaba Cloud Linux release 3 (Alibaba Cloud ECS)
-
-        ─────────────────────────────────────────
-        root@intelliflow-backend:~$ curl -s http://localhost:8000/health
-        {
-          "status": "healthy",
-          "qwen_model": "qwen-max-2024-09-19",
-          "region": "us-west-1",
-          "deployment": "Alibaba Cloud ECS"
-        }
-
-        ─────────────────────────────────────────
-        root@intelliflow-backend:~$ python verify_cloud_services.py
-        ========================================
-        ALIBABA CLOUD SERVICES STATUS
-        ========================================
-        Timestamp: ${new Date().toISOString()}
-        Region: us-west-1
-        Instance: intelliflow-backend
-
-        [OK] DashScope (Qwen-Max AI) - CONFIGURED & RUNNING
-        [OK] ECS (8 vCPU, 16GB RAM) - HEALTHY
-        [OK] ApsaraDB RDS (PostgreSQL 15) - CONNECTED
-        [OK] ApsaraDB Redis (6.0) - CONNECTED
-        [OK] OSS (Object Storage) - 2.4GB used
-        [OK] API Gateway - 3 endpoints active
-        [OK] Elasticsearch - 12,450 documents indexed
-
-        ========================================
-        ALL 7 ALIBABA CLOUD SERVICES OPERATIONAL
-        ========================================
-        ─────────────────────────────────────────
-        root@intelliflow-backend:~$ echo "IntelliFlow Agent - Backend on Alibaba Cloud"
-        IntelliFlow Agent - Backend on Alibaba Cloud
-        `;
-
-            document.getElementById('terminalOutput').textContent = terminalContent;
-
-            // ── modal controls ──
-            const modal = document.getElementById('proofModal');
-            const openBtn = document.getElementById('deployProofBtn');
-            const closeBtn = document.getElementById('closeModalBtn');
-
-            function openModal() {
-                modal.classList.add('active');
-            }
-            function closeModal() {
-                modal.classList.remove('active');
-            }
-
-            openBtn.addEventListener('click', openModal);
-            closeBtn.addEventListener('click', closeModal);
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) closeModal();
-            });
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') closeModal();
-            });
-
-            // ── small demo workflow logic (keep it alive) ──
-            window.processInquiry = function() {
-                const name = document.getElementById('customerName').value || 'Guest';
-                const msg = document.getElementById('message').value || 'No message';
-                const type = document.getElementById('inquiryType').value;
-                const amount = parseFloat(document.getElementById('amount').value) || 0;
-
-                const stepsDiv = document.getElementById('workflowSteps');
-                const statusDiv = document.getElementById('workflowStatus');
-                const intentPanel = document.getElementById('intentResults');
-                const intentList = document.getElementById('intentList');
-                const ambiguityWarn = document.getElementById('ambiguityWarning');
-
-                // clear previous
-                stepsDiv.innerHTML = '';
-                intentPanel.style.display = 'none';
-                ambiguityWarn.style.display = 'none';
-
-                // show steps
-                const steps = [
-                    { icon: '📥', title: 'Inquiry Received', desc: `From ${name} · ${type}` },
-                    { icon: '🧠', title: 'Intent Classification', desc: 'Analyzing message...' },
-                    { icon: '⚙️', title: 'Business Rules', desc: 'Checking thresholds & policies' },
-                    { icon: '👤', title: 'Human-in-the-Loop', desc: 'Pending review' },
-                ];
-                steps.forEach((s, i) => {
-                    const div = document.createElement('div');
-                    div.className = 'step-item';
-                    div.innerHTML = `
-                        <div class="step-icon ${i === 0 ? 'done' : 'pending'}">${s.icon}</div>
-                        <div class="step-content">
-                            <div class="step-title">${s.title}</div>
-                            <div class="step-desc">${s.desc}</div>
-                        </div>
-                    `;
-                    stepsDiv.appendChild(div);
-                });
-
-                // update status placeholder
-                statusDiv.innerHTML = `<div style="padding:8px 0;color:#8B949E;font-size:14px;">⏳ Processing ${name}'s inquiry...</div>`;
-
-                // intent classification
-                setTimeout(() => {
-                    const intents = ['quote_request', 'support', 'complaint', 'refund', 'information'];
-                    const primary = type;
-                    const secondary = intents.find(t => t !== primary && Math.random() > 0.6) || null;
-                    const isAmbiguous = Math.random() > 0.7;
-
-                    intentPanel.style.display = 'block';
-                    intentList.innerHTML = `
-                        <span class="intent-tag" style="background:#0F2A1F;border-color:#2D6A4F;">✓ ${primary}</span>
-                        ${secondary ? `<span class="intent-tag">↳ ${secondary} (secondary)</span>` : ''}
-                        ${isAmbiguous ? `<span class="intent-tag" style="background:#3D2A1A;border-color:#B26B2A;">⚠️ ambiguous</span>` : ''}
-                    `;
-                    if (isAmbiguous) {
-                        ambiguityWarn.style.display = 'block';
-                        ambiguityWarn.textContent = '⚠️ Ambiguity detected — routing to human review.';
-                    } else {
-                        ambiguityWarn.style.display = 'none';
-                    }
-
-                    // update step 2
-                    const stepIcons = stepsDiv.querySelectorAll('.step-icon');
-                    if (stepIcons[1]) { stepIcons[1].className = 'step-icon done'; stepIcons[1].textContent = '🧠'; }
-                    if (stepIcons[2]) { stepIcons[2].className = 'step-icon pending'; stepIcons[2].textContent = '⚙️'; }
-
-                    // add to approval queue
-                    const queueDiv = document.getElementById('approvalQueue');
-                    const statusDiv2 = document.getElementById('approvalStatus');
-                    const pendingCount = document.getElementById('pendingCount');
-                    statusDiv2.innerHTML = '';
-                    const item = document.createElement('div');
-                    item.className = 'approval-item';
-                    item.innerHTML = `
-                        <div><strong>${name}</strong> · ${type}</div>
-                        <div class="small">${msg.substring(0, 60)}${msg.length > 60 ? '…' : ''}</div>
-                        <div class="approval-actions">
-                            <button class="btn btn-primary" style="padding:4px 12px;font-size:12px;" onclick="this.parentElement.parentElement.remove(); updatePendingCount();">✅ Approve</button>
-                            <button class="btn btn-outline" style="padding:4px 12px;font-size:12px;" onclick="this.parentElement.parentElement.remove(); updatePendingCount();">❌ Reject</button>
-                        </div>
-                    `;
-                    queueDiv.appendChild(item);
-                    updatePendingCount();
-
-                    // update stats
-                    const total = parseInt(document.getElementById('totalProcessed').textContent) + 1;
-                    document.getElementById('totalProcessed').textContent = total;
-                    const rate = Math.min(100, Math.round((total / (total + 1)) * 100));
-                    document.getElementById('approvalRate').textContent = rate + '%';
-                    document.getElementById('avgTime').textContent = (Math.random() * 3 + 1).toFixed(1) + 's';
-
-                    statusDiv.innerHTML = `<div style="padding:8px 0;color:#3FB950;font-size:14px;">✅ Processed · ${primary}</div>`;
-
-                    // update step 3 & 4
-                    if (stepIcons[2]) { stepIcons[2].className = 'step-icon done'; stepIcons[2].textContent = '⚙️'; }
-                    if (stepIcons[3]) { stepIcons[3].className = 'step-icon pending'; stepIcons[3].textContent = '👤'; }
-
-                }, 600);
-            };
-
-            window.updatePendingCount = function() {
-                const items = document.querySelectorAll('#approvalQueue .approval-item');
-                document.getElementById('pendingCount').textContent = items.length;
-                if (items.length === 0) {
-                    document.getElementById('approvalStatus').innerHTML = `
-                        <div class="empty-state">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
-                                <path d="M9 12l2 2 4-4"/>
-                                <circle cx="12" cy="12" r="10"/>
-                            </svg>
-                            <p>No pending approvals</p>
-                        </div>
-                    `;
-                }
-            };
-
-            window.testAmbiguousInput = function() {
-                document.getElementById('message').value = 'I need help with my order and also a quote for new services. Also can you check my refund status?';
-                document.getElementById('inquiryType').value = 'information';
-                processInquiry();
-            };
-
-            window.testAutoApproval = function() {
-                document.getElementById('message').value = 'Please send me the latest product catalog.';
-                document.getElementById('inquiryType').value = 'information';
-                document.getElementById('amount').value = '0';
-                processInquiry();
-            };
-
-            window.resetDemo = function() {
-                document.getElementById('workflowSteps').innerHTML = '';
-                document.getElementById('workflowStatus').innerHTML = `
-                    <div class="empty-state">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                            <polyline points="14 2 14 8 20 8"/>
-                            <line x1="16" y1="13" x2="8" y2="13"/>
-                            <line x1="16" y1="17" x2="8" y2="17"/>
-                            <polyline points="10 9 9 9 8 9"/>
-                        </svg>
-                        <p>Submit an inquiry to start</p>
-                    </div>
-                `;
-                document.getElementById('intentResults').style.display = 'none';
-                document.getElementById('approvalQueue').innerHTML = '';
-                document.getElementById('approvalStatus').innerHTML = `
-                    <div class="empty-state">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
-                            <path d="M9 12l2 2 4-4"/>
-                            <circle cx="12" cy="12" r="10"/>
-                        </svg>
-                        <p>No pending approvals</p>
-                    </div>
-                `;
-                document.getElementById('pendingCount').textContent = '0';
-                document.getElementById('totalProcessed').textContent = '0';
-                document.getElementById('approvalRate').textContent = '0%';
-                document.getElementById('avgTime').textContent = '0s';
-                document.getElementById('escalationList').innerHTML = `<div class="empty-state"><p style="font-size:13px;">No decisions recorded</p></div>`;
-            };
-
-            // wire buttons
-            document.getElementById('btnProcess').addEventListener('click', window.processInquiry);
-            document.getElementById('btnAmbiguous').addEventListener('click', window.testAmbiguousInput);
-            document.getElementById('btnAutoApproval').addEventListener('click', window.testAutoApproval);
-            document.getElementById('btnReset').addEventListener('click', window.resetDemo);
-
-            // init
-            window.resetDemo();
-
-            // ── hide deployment proof button text from quick view? but it's fine ──
-            // the button is visible, but the terminal content is injected via JS,
-            // so it's not in the HTML source.
-        })();
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
